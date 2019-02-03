@@ -57,25 +57,22 @@ module.exports = async (
   })
 
   app.get('/:alias', async (req, res) => {
-    const chippo = await findChippoURLByAlias(
-      req.params['alias'],
-    )
+    const chippo = await findChippoURLByAlias(req.params['alias'])
     if (chippo && chippo.url) res.redirect(chippo.url)
     else res.render(path.join(rootPath, 'views/pages/notFound'), { mode })
   })
 
   app.post('/chippo', async (req, res) => {
-    const chippoRequest = parseChippoRequest(req.body)
-    if (!chippoRequest) {
-      res.redirect('/')
-      return
-    }
-    const chippo = await upsertURL(chippoRequest)
-    console.log('chippo', chippo)
-    const url = chippo ? chippo.url : chippoRequest.url
-    const alias = chippo ? chippo.alias : chippoRequest.alias
-    if (!url || !alias) res.redirect(`/`)
-    else res.redirect(`/p?url=${url}&alias=${alias}`)
+    const result = await upsertURL(req.body)
+    result.match(
+      ({ chippo }) =>
+        res.redirect(`/p?url=${chippo.url}&alias=${chippo.alias}`),
+      ({ request }) => {
+        if (request)
+          res.redirect(`/p?url=${request.url}&alias=${request.alias}`)
+        else res.redirect('/')
+      },
+    )
   })
 
   return new Promise((resolve, reject) => {
