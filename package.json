@@ -6,14 +6,16 @@
   "author": "beerpoldet <poladet.a@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "heroku local web",
-    "babel": "babel src/client --out-dir public --presets react-app/prod"
+    "start": "yarn babel && heroku local web",
+    "babel": "babel react-app --out-dir build --presets react-app/prod"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
     "cors": "^2.8.5",
+    "ejs": "^2.6.1",
     "express": "^4.16.4",
-    "lodash": "^4.17.11"
+    "lodash": "^4.17.11",
+    "mongodb": "^3.1.13"
   },
   "devDependencies": {
     "babel-cli": "6",
