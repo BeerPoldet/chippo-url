@@ -6,10 +6,12 @@
   "author": "beerpoldet <poladet.a@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "yarn babel && heroku local web",
-    "start:im": "yarn babel && heroku local web -e .env.im",
+    "start": "yarn prebuild && heroku local web",
+    "start:im": "yarn prebuild && heroku local web -e .env.im",
     "babel": "babel react-app --out-dir build --presets react-app/prod",
-    "test": "jest"
+    "test": "jest",
+    "prebuild": "yarn babel",
+    "heroku-prebuild": "yarn prebuild"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
