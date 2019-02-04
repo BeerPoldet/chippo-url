@@ -9,6 +9,7 @@
   </head>
   <body>
     <div class="container">
+      <% include ../partials/tabbar %>
       <section class="hero">
         <div class="hero-body">
           <div class="container">
@@ -20,7 +21,9 @@
               <div>URL: <a href="<%= chippo.url %>"><%= chippo.url %></a></div>
               <div>
                 Chippo:
-                <a href="<%= chippo.fullAlias %>"><%= chippo.fullAlias %></a>
+                <a href="<%= chippo.fullAlias %>" target="_blank"
+                  ><%= chippo.fullAlias %></a
+                >
               </div>
             </h2>
             <% } else if (type === "failure") { %>
@@ -32,6 +35,10 @@
               <div>Chipo: <%= input.alias %> is not available</div>
             </h2>
             <% } %>
+          </div>
+
+          <div class="control">
+            <a href="/" class="button is-link">Submit</a>
           </div>
         </div>
       </section>
