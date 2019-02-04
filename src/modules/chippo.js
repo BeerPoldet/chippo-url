@@ -13,7 +13,7 @@ const toURL = (exports.toURL = function(maybeURL) {
 })
 
 const parseChippoRequest = (exports.parseChippoRequest = function(request) {
-  if (!request || !request.url) return Result.failure()
+  if (!request || !request.url) return Result.failure({})
   const { alias, url } = request
   return Result.success({ alias, url })
 })

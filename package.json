@@ -7,6 +7,7 @@
   "license": "MIT",
   "scripts": {
     "start": "yarn babel && heroku local web",
+    "start:im": "yarn babel && heroku local web -e .env.im",
     "babel": "babel react-app --out-dir build --presets react-app/prod",
     "test": "jest"
   },
