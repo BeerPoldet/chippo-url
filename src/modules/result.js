@@ -26,7 +26,7 @@ class Result {
     else return failureCase(this.payload)
   }
 
-  map(transform) {
+  mapSuccess(transform) {
     return this.match(
       value => {
         return Result.success(transform(value))
@@ -37,13 +37,35 @@ class Result {
     )
   }
 
-  flatMap(transform) {
+  flatMapSuccess(transform) {
     return this.match(
       value => {
         return transform(value)
       },
       error => {
         return this
+      },
+    )
+  }
+
+  mapFailure(transform) {
+    return this.match(
+      value => {
+        return this
+      },
+      error => {
+        return Result.failure(transform(error))
+      },
+    )
+  }
+
+  flatMapFailure(transform) {
+    return this.match(
+      value => {
+        return this
+      },
+      error => {
+        return transform(error)
       },
     )
   }

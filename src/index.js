@@ -4,7 +4,7 @@ const app = require('./app')
 const inmemory = require('./databases/inmemory')
 const mongo = require('./databases/mongo')
 
-const chippo = require('./modules/chippo')
+const { createChippo } = require('./modules/chippo')
 
 async function main() {
   try {
@@ -12,16 +12,14 @@ async function main() {
       ? inmemory(config.db)
       : mongo(config.db))
 
-    upsertURL = chippo.upsertURLCreator({
+    const chippo = createChippo({
       findChippoURLByAlias: db.chippo.findChippoURLByAlias,
       findChippoURLByURL: db.chippo.findChippoURLByURL,
+      findChippoURLByAliasAndURL: db.chippo.findChippoURLByAliasAndURL,
       insertURL: db.chippo.insertURL,
     })
 
-    await app(config.app, {
-      findChippoURLByAlias: db.chippo.findChippoURLByAlias,
-      upsertURL,
-    })
+    await app(config.app, { chippo })
   } catch (err) {
     console.log(err.stack)
     process.exit(1)

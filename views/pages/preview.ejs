@@ -9,9 +9,9 @@
 <body>
   <div>
     <% if (type === "failure") { %>
-      <h1>Your url <%= targetURL %> cannot be shortened to <%= chippoURL %></h1>
+      <h1>Your url <%= input.url %> cannot be shortened to <%= input.alias %></h1>
     <% } else if (type === "success") { %>
-      <h1>Your url <%= targetURL %> becomes <%= chippoURL %></h1>
+      <h1>Your url <%= chippo.url %> becomes <%= chippo.fullAlias %></h1>
     <% } else { %>
       <h1>Something goes wrong</h1>
     <% } %>

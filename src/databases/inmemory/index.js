@@ -20,6 +20,13 @@ module.exports = async () => ({
       return { alias, url }
     },
 
+    findChippoURLByAliasAndURL: async function(alias, url) {
+      if (!alias || !url) return undefined
+      const resultURL = chippos[alias]
+      if (resultURL && resultURL === url) return { alias, url }
+      return undefined
+    },
+
     insertURL: async function(alias, url) {
       chippos[alias] = url
       return true

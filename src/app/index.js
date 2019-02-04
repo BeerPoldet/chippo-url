@@ -1,21 +1,11 @@
 const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
+const createPageRouter = require('./pageRouter')
 
-// MARK: - Data source layer
-
-function parseChippoRequest(body) {
-  if (!body) return undefined
-  const { alias, url } = body
-  if (url) return { alias, url }
-  return undefined
-}
-
-module.exports = async (
-  { mode, port, rootPath },
-  { findChippoURLByAlias, upsertURL },
-) => {
+module.exports = async ({ mode, port, rootPath }, { chippo }) => {
   const app = express()
+  const pageRouter = createPageRouter(rootPath)
 
   app.use(bodyParser.urlencoded({ extended: false }))
   app.use(bodyParser.json())
@@ -25,45 +15,46 @@ module.exports = async (
   app.use('/static', express.static(path.join(rootPath, 'build')))
 
   app.get('/', (req, res) => {
-    res.render(path.join(rootPath, 'views/pages/index'), { mode })
+    res.render(pageRouter.routeFor('index'), { mode })
   })
 
   app.get('/p', async (req, res) => {
-    const targetURL = req.query['url']
+    const url = req.query['url']
     const alias = req.query['alias']
-    if (!targetURL || !alias) {
-      res.redirect('/')
-      return
-    }
-    const chippo = await findChippoURLByAlias(alias)
-    // check if url is part of target url it might not string identical
-    const { url: existURL } = chippo || {}
-    const chippoURL = path.join(req.headers.host, alias)
-    if (!existURL || existURL !== targetURL) {
-      res.render(path.join(rootPath, 'views/pages/preview'), {
-        mode,
+
+    const result = await chippo.isExist(alias, url)
+    result
+      .mapSuccess(chippo => ({
+        type: 'success',
+        chippo: {
+          ...chippo,
+          fullAlias: path.join(req.headers.host, chippo.alias)
+        },
+      }))
+      .mapFailure(({ alias, url }) => ({
         type: 'failure',
-        targetURL,
-        chippoURL,
-      })
-      return
-    }
-    res.render(path.join(rootPath, 'views/pages/preview'), {
-      mode,
-      type: 'success',
-      targetURL,
-      chippoURL,
-    })
+        input: alias && url ? { alias, url } : undefined,
+      }))
+      .match(
+        paramter => res.render(pageRouter.routeFor('preview'), paramter),
+        paramter => {
+          if (paramter.input)
+            res.render(pageRouter.routeFor('preview'), paramter)
+          else res.redirect('/')
+        },
+      )
   })
 
   app.get('/:alias', async (req, res) => {
-    const chippo = await findChippoURLByAlias(req.params['alias'])
-    if (chippo && chippo.url) res.redirect(chippo.url)
-    else res.render(path.join(rootPath, 'views/pages/notFound'), { mode })
+    const result = await chippo.findByAlias(req.params['alias'])
+    result.match(
+      ({ alias, url }) => res.redirect(url),
+      () => res.render(pageRouter.routeFor('notFound'), { mode }),
+    )
   })
 
   app.post('/chippo', async (req, res) => {
-    const result = await upsertURL(req.body)
+    const result = await chippo.upsertURL(req.body)
     result.match(
       ({ chippo }) =>
         res.redirect(`/p?url=${chippo.url}&alias=${chippo.alias}`),

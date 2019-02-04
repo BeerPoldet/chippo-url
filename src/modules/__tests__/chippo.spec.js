@@ -1,5 +1,54 @@
 const { Result } = require('../result')
-const { parseChippoRequest, toURL, upsertURLCreator } = require('../chippo')
+const {
+  isExistCreator,
+  findByAliasCreator,
+  parseChippoRequest,
+  toURL,
+  upsertURLCreator,
+} = require('../chippo')
+
+describe('findByAlias()', () => {
+  it('should return failure if no chippo returns', async () => {
+    const findByAlias = findByAliasCreator(async () => undefined)
+    expect((await findByAlias('abc')).isFailure()).toBeTruthy()
+  })
+
+  it('should return success if chippo returns', async () => {
+    const findByAlias = findByAliasCreator(async () => ({
+      alias: 'abc',
+      url: 'abc.com',
+    }))
+    const result = await findByAlias('abc')
+    expect(result.isSuccess()).toBeTruthy()
+    expect(result.payload).toEqual({
+      alias: 'abc',
+      url: 'abc.com',
+    })
+  })
+})
+
+describe('isExist()', () => {
+  it('should return failure if one of alias or url is not supplied', async () => {
+    const isExist = isExistCreator(async () => {})
+    expect((await isExist('abc', undefined)).isFailure()).toBeTruthy()
+    expect((await isExist(undefined, 'abc')).isFailure()).toBeTruthy()
+    expect((await isExist(undefined, undefined)).isFailure()).toBeTruthy()
+  })
+
+  it('should return failure if no chippo matches', async () => {
+    const isExist = isExistCreator(async () => undefined)
+    const result = await isExist('abc', 'abc.com')
+    expect(result.isFailure()).toBeTruthy()
+    expect(result.payload).toEqual({ alias: 'abc', url: 'abc.com' })
+  })
+
+  it('should return success if found chippo matches', async () => {
+    const isExist = isExistCreator(async () => ({ alias: 'abc', url: 'abc.com' }))
+    const result = await isExist('abc', 'abc.com')
+    expect(result.isSuccess()).toBeTruthy()
+    expect(result.payload).toEqual({ alias: 'abc', url: 'abc.com' })
+  })
+})
 
 describe('parseChippoRequest()', () => {
   it('should return chippo containing url', () => {

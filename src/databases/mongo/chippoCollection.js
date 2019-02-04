@@ -16,6 +16,11 @@ const findChippoURLByURLCreator = db => async url => {
   return collection(db).findOne({ url })
 }
 
+const findChippoURLByAliasAndURLCreator = db => async (alias, url) => {
+  if (!alias || !url) return undefined
+  return collection(db).findOne({ alias, url })
+}
+
 const insertURLCreator = db => async (alias, url) =>
   collection(db)
     .insertOne({ alias, url })
@@ -27,6 +32,7 @@ module.exports = async db => {
   return {
     findChippoURLByAlias: findChippoURLByAliasCreator(db),
     findChippoURLByURL: findChippoURLByURLCreator(db),
+    findChippoURLByAliasAndURL: findChippoURLByAliasAndURLCreator(db),
     insertURL: insertURLCreator(db),
   }
 }
