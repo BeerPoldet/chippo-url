@@ -23,7 +23,7 @@ async function main() {
       upsertURL,
     })
   } catch (err) {
-    console.error(err)
+    console.log(err.stack)
     process.exit(1)
   }
 }
