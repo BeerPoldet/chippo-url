@@ -133,7 +133,8 @@ describe('upsertURLCreator()', () => {
       expect(result.isSuccess()).toBeTruthy()
     })
 
-    it('should return failure when url is not exist but database error', async () => {
+    it(`should return failure when url is not exist but database error. 
+      eg. same alias is being inserted in the same time and one of them will get failure`, async () => {
       const upsertURL = upsertURLCreator({
         findChippoURLByURL: async () => null,
         createAlias: () => 'xxx',
