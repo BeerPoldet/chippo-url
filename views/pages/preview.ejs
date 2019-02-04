@@ -10,7 +10,7 @@
   <body>
     <div class="container">
       <% include ../partials/tabbar %>
-      <section class="hero">
+      <section class="hero is-medium is-success is-bold">
         <div class="hero-body">
           <div class="container">
             <% if (type === "success") { %>
@@ -18,7 +18,12 @@
               Preview
             </h1>
             <h2 class="subtitle">
-              <div>URL: <a href="<%= chippo.url %>"><%= chippo.url %></a></div>
+              <div>
+                URL:
+                <a href="<%= chippo.url %>" target="_blank"
+                  ><%= chippo.url %></a
+                >
+              </div>
               <div>
                 Chippo:
                 <a href="<%= chippo.fullAlias %>" target="_blank"
@@ -31,14 +36,13 @@
               Chippo Failed
             </h1>
             <h2 class="subtitle">
-              <div>URL: <a href="<%= input.url %>"><%= input.url %></a></div>
+              <div>
+                URL:
+                <a href="<%= input.url %>" target="_blank"><%= input.url %></a>
+              </div>
               <div>Chipo: <%= input.alias %> is not available</div>
             </h2>
             <% } %>
-          </div>
-
-          <div class="control">
-            <a href="/" class="button is-link">Submit</a>
           </div>
         </div>
       </section>
