@@ -1,22 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Chippo URL</title>
-</head>
-<body>
-  <noscript>
-    You need to enable JavaScript to run this app.
-  </noscript>
-  <div id="root"></div>
-  <script src="https://unpkg.com/react@16/umd/react.<%= mode === 'production' ? 'production.min' : 'development' %>.js" crossorigin></script>
-  <script src="https://unpkg.com/react-dom@16/umd/react-dom.<%= mode === 'production' ? 'production.min' : 'development' %>.js" crossorigin></script>
-  <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
-  <script src="/static/index.js"></script>
-  <script>
-    ReactDOM.render(React.createElement(IndexApp), root)
-  </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Chippo URL</title>
+
+    <% include ../partials/head %>
+  </head>
+  <body>
+    <noscript>
+      You need to enable JavaScript to run this app.
+    </noscript>
+    <div class="container">
+      <section class="section">
+        <div class="container">
+          <h1 class="title">
+            Welcome to Chippo URL!
+          </h1>
+          <p class="subtitle">We create create short(chippo) URL for you!</p>
+
+          <form action="/chippo" method="POST">
+            <nav class="level">
+              <div class="level-left">
+                <div class="level-items">
+                  <div class="field">
+                    <label class="label">URL</label>
+                    <div class="control">
+                      <input
+                        name="url"
+                        class="input"
+                        type="text"
+                        placeholder="eg. twitter.com"
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="level-items">
+                  <div class="field">
+                    <label class="label">Custom Alias</label>
+                    <div class="control">
+                      <input
+                        name="alias"
+                        class="input"
+                        type="text"
+                        placeholder="eg. tw"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </nav>
+
+            <div class="control">
+              <button class="button is-link" type="submit">Submit</button>
+            </div>
+          </form>
+        </div>
+      </section>
+      <% include ../partials/footer %>
+    </div>
+  </body>
 </html>

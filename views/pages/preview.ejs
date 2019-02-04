@@ -1,20 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-UA-Compatible" content="ie=edge">
-  <title>Chippo URL</title>
-</head>
-<body>
-  <div>
-    <% if (type === "failure") { %>
-      <h1>Your url <%= input.url %> cannot be shortened to <%= input.alias %></h1>
-    <% } else if (type === "success") { %>
-      <h1>Your url <%= chippo.url %> becomes <%= chippo.fullAlias %></h1>
-    <% } else { %>
-      <h1>Something goes wrong</h1>
-    <% } %>
-  </div>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Preview Chippo URL</title>
+    <% include ../partials/head %>
+  </head>
+  <body>
+    <div class="container">
+      <section class="hero">
+        <div class="hero-body">
+          <div class="container">
+            <% if (type === "success") { %>
+            <h1 class="title">
+              Preview
+            </h1>
+            <h2 class="subtitle">
+              <div>URL: <a href="<%= chippo.url %>"><%= chippo.url %></a></div>
+              <div>
+                Chippo:
+                <a href="<%= chippo.fullAlias %>"><%= chippo.fullAlias %></a>
+              </div>
+            </h2>
+            <% } else if (type === "failure") { %>
+            <h1 class="title">
+              Chippo Failed
+            </h1>
+            <h2 class="subtitle">
+              <div>URL: <a href="<%= input.url %>"><%= input.url %></a></div>
+              <div>Chipo: <%= input.alias %> is not available</div>
+            </h2>
+            <% } %>
+          </div>
+        </div>
+      </section>
+      <% include ../partials/footer %>
+    </div>
+  </body>
 </html>
