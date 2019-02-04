@@ -6,12 +6,9 @@
   "author": "beerpoldet <poladet.a@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "yarn prebuild && heroku local web",
-    "start:im": "yarn prebuild && heroku local web -e .env.im",
-    "babel": "babel react-app --out-dir build --presets react-app/prod",
-    "test": "jest",
-    "prebuild": "yarn babel",
-    "heroku-prebuild": "yarn prebuild"
+    "start": "heroku local web",
+    "start:im": "heroku local web -e .env.im",
+    "test": "jest"
   },
   "dependencies": {
     "body-parser": "^1.18.3",
@@ -22,8 +19,6 @@
     "mongodb": "^3.1.13"
   },
   "devDependencies": {
-    "babel-cli": "6",
-    "babel-preset-react-app": "3",
     "jest": "^24.0.0"
   }
 }
