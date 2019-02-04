@@ -12,14 +12,14 @@ async function main() {
       ? inmemory(config.db)
       : mongo(config.db))
 
-    const chippo = createChippo({
+    const chippoLogic = createChippo({
       findChippoURLByAlias: db.chippo.findChippoURLByAlias,
       findChippoURLByURL: db.chippo.findChippoURLByURL,
       findChippoURLByAliasAndURL: db.chippo.findChippoURLByAliasAndURL,
       insertURL: db.chippo.insertURL,
     })
 
-    await app(config.app, { chippo })
+    await app(config.app, { chippoLogic })
   } catch (err) {
     console.log(err.stack)
     process.exit(1)

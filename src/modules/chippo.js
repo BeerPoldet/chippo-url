@@ -12,6 +12,7 @@ exports.createChippo = ({
   insertURL,
   createAlias,
 }) => ({
+  toFullURL,
   findByAlias: findByAliasCreator(findChippoURLByAlias),
   isExist: isExistCreator(findChippoURLByAliasAndURL),
   upsertURL: upsertURLCreator({
@@ -38,6 +39,10 @@ const findByAliasCreator = (exports.findByAliasCreator = findChippoURLByAlias =>
   const chippo = await findChippoURLByAlias(alias)
   if (chippo && chippo.url) return Result.success(chippo)
   return Result.failure(alias)
+})
+
+const toFullURL = (exports.toFullURL = function(protocol, host, alias) {
+  return `${protocol}://${host}/${alias}`
 })
 
 const toURL = (exports.toURL = function(maybeURL) {

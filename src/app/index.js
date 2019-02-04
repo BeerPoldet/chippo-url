@@ -3,7 +3,7 @@ const path = require('path')
 const bodyParser = require('body-parser')
 const createPageRouter = require('./pageRouter')
 
-module.exports = async ({ mode, port, rootPath }, { chippo }) => {
+module.exports = async ({ mode, port, rootPath }, { chippoLogic }) => {
   const app = express()
   const pageRouter = createPageRouter(rootPath)
 
@@ -22,13 +22,17 @@ module.exports = async ({ mode, port, rootPath }, { chippo }) => {
     const url = req.query['url']
     const alias = req.query['alias']
 
-    const result = await chippo.isExist(alias, url)
+    const result = await chippoLogic.isExist(alias, url)
     result
       .mapSuccess(chippo => ({
         type: 'success',
         chippo: {
           ...chippo,
-          fullAlias: path.join(req.headers.host, chippo.alias)
+          fullAlias: chippoLogic.toFullURL(
+            req.protocol,
+            req.headers.host,
+            chippo.alias,
+          ),
         },
       }))
       .mapFailure(({ alias, url }) => ({
@@ -46,7 +50,7 @@ module.exports = async ({ mode, port, rootPath }, { chippo }) => {
   })
 
   app.get('/:alias', async (req, res) => {
-    const result = await chippo.findByAlias(req.params['alias'])
+    const result = await chippoLogic.findByAlias(req.params['alias'])
     result.match(
       ({ alias, url }) => res.redirect(url),
       () => res.render(pageRouter.routeFor('notFound'), { mode }),
@@ -54,7 +58,7 @@ module.exports = async ({ mode, port, rootPath }, { chippo }) => {
   })
 
   app.post('/chippo', async (req, res) => {
-    const result = await chippo.upsertURL(req.body)
+    const result = await chippoLogic.upsertURL(req.body)
     result.match(
       ({ chippo }) =>
         res.redirect(`/p?url=${chippo.url}&alias=${chippo.alias}`),
