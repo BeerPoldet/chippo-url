@@ -9,7 +9,6 @@ module.exports = {
   },
   isInMemory: process.env.DB_TYPE === 'inmemory',
   db: {
-    url: process.env['MONGODB_URI'] || 'mongodb://localhost:27017',
-    name: mode === 'production' ? 'chippo' : 'chippo_dev',
+    url: process.env['MONGODB_URI'] || 'mongodb://localhost:27017/chippo_dev',
   },
 }
