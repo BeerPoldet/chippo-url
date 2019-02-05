@@ -1,12 +1,14 @@
 const express = require('express')
 const path = require('path')
 const bodyParser = require('body-parser')
+const helmet = require('helmet')
 const createPageRouter = require('./pageRouter')
 
 module.exports = async ({ mode, port, rootPath }, { chippoLogic }) => {
   const app = express()
   const pageRouter = createPageRouter(rootPath)
-
+  
+  app.use(helmet())
   app.use(bodyParser.urlencoded({ extended: true }))
   app.use(bodyParser.json())
   app.set('view engine', 'ejs')

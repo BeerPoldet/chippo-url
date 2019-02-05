@@ -1,38 +1,34 @@
 const collection = db => db.collection('chippos')
 
-async function listChippos(db) {
-  return collection(db)
-    .find()
-    .toArray()
-}
-
-const findChippoURLByAliasCreator = db => async alias => {
+const findChippoURLByAliasCreator = withDB => async alias => {
   if (!alias) return undefined
-  return collection(db).findOne({ alias })
+  return withDB(db => collection(db).findOne({ alias }))
 }
 
-const findChippoURLByURLCreator = db => async url => {
+const findChippoURLByURLCreator = withDB => async url => {
   if (!url) return undefined
-  return collection(db).findOne({ url })
+  return withDB(db => collection(db).findOne({ url }))
 }
 
-const findChippoURLByAliasAndURLCreator = db => async (alias, url) => {
+const findChippoURLByAliasAndURLCreator = withDB => async (alias, url) => {
   if (!alias || !url) return undefined
-  return collection(db).findOne({ alias, url })
+  return withDB(db => collection(db).findOne({ alias, url }))
 }
 
-const insertURLCreator = db => async (alias, url) =>
-  collection(db)
-    .insertOne({ alias, url })
-    .then(() => true) // I just don't want to deal with this error for this challenge
-    .catch(() => false)
+const insertURLCreator = withDB => async (alias, url) =>
+  withDB(db =>
+    collection(db)
+      .insertOne({ alias, url })
+      .then(() => true) // I just don't want to deal with this error for this challenge
+      .catch(() => false),
+  )
 
-module.exports = async db => {
-  await collection(db).createIndex({ alias: 1 }, { unique: true })
+module.exports = async withDB => {
+  await withDB(db => collection(db).createIndex({ alias: 1 }, { unique: true }))
   return {
-    findChippoURLByAlias: findChippoURLByAliasCreator(db),
-    findChippoURLByURL: findChippoURLByURLCreator(db),
-    findChippoURLByAliasAndURL: findChippoURLByAliasAndURLCreator(db),
-    insertURL: insertURLCreator(db),
+    findChippoURLByAlias: findChippoURLByAliasCreator(withDB),
+    findChippoURLByURL: findChippoURLByURLCreator(withDB),
+    findChippoURLByAliasAndURL: findChippoURLByAliasAndURLCreator(withDB),
+    insertURL: insertURLCreator(withDB),
   }
 }

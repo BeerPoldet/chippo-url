@@ -2,20 +2,25 @@ const mongodb = require('mongodb')
 const MongoClient = mongodb.MongoClient
 const chippoCollection = require('./chippoCollection')
 
-async function bootstrapDatabase(db) {
-  return { chippo: await chippoCollection(db) }
+async function bootstrapDatabase(withDB) {
+  return { chippo: await chippoCollection(withDB) }
 }
 
-async function connectDatabase(url) {
-  const client = new MongoClient(url, { useNewUrlParser: true })
+const withDBCreator = connectDatabase => async exec => {
+  const client = await connectDatabase()
+  const result = await exec(client.db())
+  client.close()
+  return result
+}
 
+const connectDatabaseCreator = url => async () => {
+  const client = new MongoClient(url, { useNewUrlParser: true })
   try {
     await client.connect()
-    console.log(`Connected to database via ${url}`)
-
-    return client.db()
+    return client
   } catch (err) {
     console.erorr(err)
+    return err
   }
 }
 
@@ -26,9 +31,6 @@ async function connectDatabase(url) {
  * }
  */
 module.exports = async config => {
-  const db = await connectDatabase(config.url)
-  return {
-    db,
-    ...(await bootstrapDatabase(db)),
-  }
+  const connectDatabase = await connectDatabaseCreator(config.url)
+  return bootstrapDatabase(withDBCreator(connectDatabase))
 }
